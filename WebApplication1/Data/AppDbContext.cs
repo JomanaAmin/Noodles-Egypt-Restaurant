@@ -26,7 +26,7 @@ namespace NoodlesEgypt.Data
             };
             builder.Entity<IdentityRole>().HasData(admin);
 
-            builder.Entity<ProductVariant>().Property(v => v.VariantPrice).HasPrecision(6,2);
+           // builder.Entity<ProductVariant>().Property(v => v.VariantPrice).HasPrecision(6,2);
         }
     }
 }

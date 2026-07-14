@@ -1,11 +1,15 @@
-﻿namespace WebApplication1.Data.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApplication1.Data.Entities
 {
     public class Product
     {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-        public string ProductDescription { get; set; } = string.Empty;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; } = string.Empty;
+        [MaxLength(100)]
+        public string ImageFileName { get; set; }
         public int CategoryId { get; set; }
-        public ICollection<ProductVariant> ProductVariants { get; set; }
+        public ICollection<ProductVariant> Variants { get; set; }
     }
 }
