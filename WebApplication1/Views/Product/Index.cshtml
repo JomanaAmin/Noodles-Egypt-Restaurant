@@ -1,0 +1,34 @@
+﻿@model IEnumerable<WebApplication1.Data.Entities.Product>
+
+<h2>Menu Items</h2>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Variants (Name - Price)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><strong>@item.Name</strong><br /><small>@item.Description</small></td>
+                <td>@item.Category.Name</td>
+                <td>
+                    <ul class="list-unstyled">
+                        @foreach (var variant in item.Variants)
+                        {
+                            <li>@variant.Name: <strong>$@variant.Price.ToString("F2")</strong></li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -18,15 +18,10 @@ namespace WebApplication1.Data.Repositories
             await dbSet.AddAsync(entity);
         }
 
-        public async Task<T?> DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            T? entity = await dbSet.FindAsync(id);
-            if (entity != null)
-            {
-                dbSet.Remove(entity);
-                return entity;
-            }
-            return null;
+   
+            dbSet.Remove(entity);
         }
 
         public IQueryable<T> GetAllAsQueryable()

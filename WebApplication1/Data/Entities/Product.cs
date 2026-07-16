@@ -10,6 +10,7 @@ namespace WebApplication1.Data.Entities
         [MaxLength(100)]
         public string ImageFileName { get; set; }
         public int CategoryId { get; set; }
+        public Category Category { get; set; }
         public ICollection<ProductVariant> Variants { get; set; }
     }
 }
