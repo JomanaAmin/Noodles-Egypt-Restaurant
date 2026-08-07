@@ -1,8 +1,146 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section id="home" class="container">
+    <div class="hero reveal" role="region" aria-label="Hero">
+        @* <div class="hero__media" aria-hidden="true"></div> *@
+        <div class="hero__media" aria-hidden="true" style="background-image: url('/images/hero-image.png'); background-size: cover; background-position: center;"></div>
+        <div class="hero__overlay" aria-hidden="true"></div>
+
+        <div class="hero__content">
+            <div class="d-flex align-items-center mb-3 reveal" style="gap:1rem;">
+                <span class="hinomaru" aria-hidden="true"></span>
+                <div class="text-small" style="color: rgba(255,255,255,0.92); letter-spacing: .14em; font-weight:600;">AUTHENTIC SUSHI</div>
+            </div>
+
+            <h1 class="reveal" style="color: rgba(255,255,255);">Quiet craft. Pristine fish. A modern Japanese tasting.</h1>
+            <p class="lead reveal">We present pared-back plates that emphasize seasonality, precision, and balance. Join us for an immersive sushi experience — curated by master chefs and served with gentle formality.</p>
+
+            <div class="cta reveal" role="navigation" aria-label="Primary actions">
+                <a class="btn-cta primary" href="@Url.Action("Index", "Menu")">View Menu</a>
+                <a class="btn-cta ghost" href="mailto:info@example.com">Make a Reservation</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="alt">
+    <div class="container reveal">
+        <div class="about-grid">
+            <div>
+                <h2>About Us</h2>
+                <p class="lead">At Noodles Egypt we honor Japanese traditions while working with local, seasonal ingredients. Each dish is a deliberate composition of texture, temperature and flavor.</p>
+
+                <div class="features" aria-hidden="false">
+                    <div class="feature">
+                        <div class="icon">F</div>
+                        <div>
+                            <strong>Fresh Ingredients</strong>
+                            <div class="text-muted small">Sourced daily from trusted purveyors.</div>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="icon">C</div>
+                        <div>
+                            <strong>Master Chefs</strong>
+                            <div class="text-muted small">Seasoned chefs trained in classical technique.</div>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="icon">R</div>
+                        <div>
+                            <strong>Authentic Recipes</strong>
+                            <div class="text-muted small">Time-honored preparations with modern sensibility.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="about-image" role="img" aria-label="Chef preparing sushi"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="categories">
+    <div class="container reveal">
+        <!-- Header: Responsive stacking on mobile, side-by-side on desktop -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end mb-4 gap-3">
+            <div>
+                <h2>Categories</h2>
+                <p class="text-muted small mb-0">Explore our menu by category — handcrafted and seasonal.</p>
+            </div>
+            <div>
+                <a class="btn-cta primary text-nowrap" href="@Url.Action("Index", "Menu")">See Full Menu</a>
+            </div>
+        </div>
+
+        @model List<WebApplication1.Models.CategoryDTO.CategoryViewModel>
+        <div class="categories-grid mt-4">
+            @foreach (var category in Model)
+            @* Ensure your CSS file uses grid/flex-wrap for .categories-grid so cards wrap on mobile *@
+            {
+                <a class="cat-card reveal" href="@Url.Action("GetByCategory", "Menu", new { id = category.Id })" style="text-decoration:none; color:inherit;">
+                    <div class="media" style="background-image:url('/categories/@category.ImageFileName')"></div>
+                    <div class="body">
+                        <div class="cat-badge">@category.Name</div>
+                        <div class="text-muted small">@category.Description</div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="alt">
+    <div class="container reveal">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h2>Contact & Location</h2>
+                <p class="text-muted">For reservations, private events or inquiries, please contact us.</p>
+
+                <div class="contact-grid mt-3">
+                    <div class="contact-card">
+                        <p class="mb-1"><strong>Address</strong></p>
+                        <p class="text-muted small">City Mall, 2nd District, 6th of October city</p>
+                        <p class="mb-1"><strong>Hours</strong></p>
+                        <p class="text-muted small">Sat–Thur: 12:00 PM – 10:00 PM · Friday: Closed</p>
+                        <p class="mb-1"><strong>Phone</strong></p>
+                        <p class="text-muted small"><a href="tel:+201020196390">+20102 019 6390</a></p>
+                        @* <p class="mb-1"><strong>Email</strong></p>
+                        <p class="text-muted small"><a href="mailto:info@example.com">info@example.com</a></p> *@
+                    </div>
+
+                    <div class="contact-card">
+                        <p class="mb-2"><strong>Find us</strong></p>
+                        <div style="background:#eee; height:220px; border-radius:10px; display:flex;align-items:center;justify-content:center;color:#999;">
+                            Google Map Placeholder
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="max-width:360px;">
+                <div class="menu-card" style="padding:1rem 1.2rem; border-radius:12px;">
+                    <h5 class="mb-1">Reserve</h5>
+                    <p class="text-muted small mb-2">Call or email to reserve a table.</p>
+                    <a class="btn-cta primary" href="mailto:info@example.com">Reserve a Table</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Add reveal class when page loads for hero content
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                setTimeout(() => el.classList.add('in-view'), 120 + i * 90);
+            });
+        });
+    </script>
+}

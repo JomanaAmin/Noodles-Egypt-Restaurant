@@ -1,0 +1,30 @@
+﻿@using WebApplication1.Models.CategoryDTO
+@model CategoryViewModel
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Delete Category</h1>
+            <p class="text-muted small mb-0">Confirm removal of this category. Items in this category may be affected.</p>
+        </div>
+        <a class="btn btn-outline-dark" href="@Url.Action("Index", "Category")">Back</a>
+    </div>
+
+    <div class="form-section">
+        <h4>@Model.Name</h4>
+        <img src="@Url.Content($"~/categories/{Model.ImageFileName}")" alt="@Model.Name" class="img-fluid rounded mb-3" style="height:160px; object-fit:cover;" />
+        <p class="text-muted">@(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "No description provided.")</p>
+
+        <form asp-action="Delete" asp-controller="Category" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-outline-danger">Confirm Delete</button>
+                <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Category")">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

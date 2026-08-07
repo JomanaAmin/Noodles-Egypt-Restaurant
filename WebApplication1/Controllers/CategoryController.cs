@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
@@ -22,7 +21,16 @@ namespace WebApplication1.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var categories = await categoryRepository.GetAllAsync();
+            var categories = await categoryRepository.GetAllAsQueryable()
+                .Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    ImageFileName = c.ImageFileName
+                })
+                .ToListAsync();
+
             return View(categories);
         }
         [Authorize(Roles = "Admin")]
@@ -58,13 +66,13 @@ namespace WebApplication1.Controllers
             {
                 return RedirectToAction("Index");
             }
-            CreateCategoryDTO dto= new CreateCategoryDTO
+            UpdateCategoryDTO dto = new UpdateCategoryDTO
             {
+                Id = id,
                 Name = category.Name,
-                Description = category.Description
+                Description = category.Description,
+                ImageFileName = category.ImageFileName
             };
-            ViewData["CategoryId"] = category.Id;
-            ViewData["ImageFileName"]= category.ImageFileName;
             return View(dto);
         }
         [HttpPost]
@@ -110,7 +118,7 @@ namespace WebApplication1.Controllers
             var category = await categoryRepository.GetByIdAsync(id);
             if (category == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
             
             string filePathName = environment.WebRootPath + "/categories/" + category.ImageFileName;
@@ -123,12 +131,19 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Details(int id) 
         {
             var category = await categoryRepository.GetByIdAsync(id);
+            CategoryViewModel categoryViewModel = new CategoryViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ImageFileName = category.ImageFileName
+            };
             if (category == null)
             {
                 return NotFound();
             }
             //ViewData["ImageFileName"] = category.ImageFileName;
-            return View(category);
+            return View(categoryViewModel);
         }
     }
 }

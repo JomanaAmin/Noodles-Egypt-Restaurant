@@ -1,33 +1,46 @@
-﻿@using WebApplication1.Data.Entities
-@model Category
+﻿@using WebApplication1.Models.CategoryDTO
+@model CategoryViewModel
 
-<h2>Details for @Model.Name</h2>
+@{
+    ViewData["Title"] = Model?.Name ?? "Category";
+}
 
-<div>
-    <div class="row mb-3">
-        <label class="col-sm-4 col-form-label fw-bold">Name</label>
-        <div class="col-sm-8 pt-2">
-            @Model.Name
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="mb-0">@Model.Name</h1>
+            <div class="text-muted small">@(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "")</div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-dark" href="@Url.Action("Index", "Category")">Back</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-accent" href="@Url.Action("Update", "Category", new { id = Model.Id })">Edit</a>
+            }
         </div>
     </div>
 
-    <div class="row mb-3">
-        <label class="col-sm-4 col-form-label fw-bold">Description</label>
-        <div class="col-sm-8 pt-2">
-            @Model.Description
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="menu-card p-4 text-center">
+                <img src="@Url.Content($"~/categories/{Model.ImageFileName}")" alt="@Model.Name" class="img-fluid rounded" style="height:220px; object-fit:cover;" />
+                <h5 class="mt-3">Overview</h5>
+                <p class="text-muted">@(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "No description provided.")</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row mb-3">
-        <label class="col-sm-4 col-form-label fw-bold">Image</label>
-        <div class="col-sm-8">
-            <img src="/categories/@Model.ImageFileName" width="150" class="img-thumbnail" />
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-sm-8 offset-sm-4">
-            <a class="btn btn-primary" asp-controller="Category" asp-action="Index">Back to List</a>
+        <div class="col-md-6">
+            <div class="menu-card p-4">
+                <h5>Actions</h5>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-dark" href="@Url.Action("GetByCategory", "Menu", new { id = Model.Id })">View Items</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-outline-danger" href="@Url.Action("Delete", "Category", new { id = Model.Id })">Delete</a>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>

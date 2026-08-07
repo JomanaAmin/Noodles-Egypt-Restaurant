@@ -1,29 +1,49 @@
-﻿@using WebApplication1.Data.Entities
-@model List<Category>
-<h2>Categories</h2>
-<table>
-    <thead>
-        <th>Name</th>
-        <th>Description</th>
-    </thead>
-    <tbody>
-        @foreach (var category in Model)
+﻿@using WebApplication1.Models.CategoryDTO
+@model IEnumerable<CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Categories</h1>
+            <p class="text-muted small mb-0">Organize menu items by category.</p>
+        </div>
+
+        @if (User.IsInRole("Admin"))
         {
-            <tr>
-                <td>@category.Name</td>
-                <td>@category.Description</td>
-                <td><img src="/categories/@category.ImageFileName" width="100"/></td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="Category" asp-action="Update"
-                        asp-route-id="@category.Id">Edit</a> 
-                        <a class="btn btn-primary btn-sm" asp-controller="Category" asp-action="Delete"
-                        asp-route-id="@category.Id">Delete</a>
-                    </td>
-                }
-            </tr>
-            
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" href="@Url.Action("Create", "Category")">+ New Category</a>
+                <a class="btn btn-accent" href="@Url.Action("Create", "Menu")">+ New Item</a>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var c in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="cat-card h-100 d-flex flex-column reveal">
+                    <div class="media" style="background-image:url('@Url.Content($"~/categories/{c.ImageFileName}")');"></div>
+                    <div class="body d-flex flex-column">
+                        <h5 class="mb-1">@c.Name</h5>
+                        <div class="text-muted small mb-3">@(!string.IsNullOrEmpty(c.Description) ? c.Description : "Seasonal and handcrafted selections.")</div>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <a class="btn btn-outline-dark btn-sm" href="@Url.Action("GetByCategory", "Menu", new { id = c.Id })">View</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="d-flex gap-1">
+                                    <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Update", "Category", new { id = c.Id })">Edit</a>
+                                    <a class="btn btn-sm btn-outline-danger" href="@Url.Action("Delete", "Category", new { id = c.Id })">Delete</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

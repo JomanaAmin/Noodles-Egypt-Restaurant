@@ -3,16 +3,16 @@ using WebApplication1.Data.Entities;
 
 namespace WebApplication1.Models.ProductDTO
 {
-    public class CreateProductDTO
+    public class ProductDTO
     {
-        [Required]
+        public int Id { get; set; }
         public string Name { get; set; }
-        [Required]
         public string Description { get; set; } = string.Empty;
-        [Required]
-        public IFormFile ImageFile { get; set; }
-        [Required]
+        [MaxLength(100)]
+        public string ImageFileName { get; set; } = string.Empty;
         public int CategoryId { get; set; }
-        public List<CreateProductVariantDTO> Variants { get; set; } = new();
+        public string CategoryName { get; set; } = string.Empty;
+        public List<ProductVariantDTO> Variants { get; set; }
+        
     }
 }

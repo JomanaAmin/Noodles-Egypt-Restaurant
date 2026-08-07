@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- ... keep existing hero and about sections unchanged ... -->
+
+<section id="categories">
+    <div class="container reveal">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2>Categories</h2>
+                <p class="text-muted small mb-0">Explore our menu by category — handcrafted and seasonal.</p>
+            </div>
+            <div>
+                <a class="btn-cta primary" href="@Url.Action("Index","Menu")">See Full Menu</a>
+            </div>
+        </div>
+
+        <div class="categories-grid mt-4">
+            <a class="cat-card reveal" href="@Url.Action("GetByCategoryName","Menu", new { name = "Nigiri" })" style="text-decoration:none; color:inherit;">
+                <div class="media" style="background-image:url('/images/cat-nigiri.jpg')"></div>
+                <div class="body">
+                    <div class="cat-badge">Nigiri</div>
+                    <div class="text-muted small">Simple, elegant pieces that showcase the fish.</div>
+                </div>
+            </a>
+
+            <a class="cat-card reveal" href="@Url.Action("GetByCategoryName","Menu", new { name = "Rolls" })" style="text-decoration:none; color:inherit;">
+                <div class="media" style="background-image:url('/images/cat-rolls.jpg')"></div>
+                <div class="body">
+                    <div class="cat-badge">Rolls</div>
+                    <div class="text-muted small">Seasonal rolls with balanced textures and flavors.</div>
+                </div>
+            </a>
+
+            <a class="cat-card reveal" href="@Url.Action("GetByCategoryName","Menu", new { name = "Sashimi" })" style="text-decoration:none; color:inherit;">
+                <div class="media" style="background-image:url('/images/cat-sashimi.jpg')"></div>
+                <div class="body">
+                    <div class="cat-badge">Sashimi</div>
+                    <div class="text-muted small">Pristine cuts, simply presented.</div>
+                </div>
+            </a>
+
+            <a class="cat-card reveal" href="@Url.Action("Index","Menu")" style="text-decoration:none; color:inherit;">
+                <div class="media" style="background-image:url('/images/cat-specials.jpg')"></div>
+                <div class="body">
+                    <div class="cat-badge">Chef's Selections</div>
+                    <div class="text-muted small">Tasting menus and limited seasonal plates.</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ... rest of the page unchanged ... -->

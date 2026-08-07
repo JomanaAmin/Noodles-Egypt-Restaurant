@@ -1,0 +1,19 @@
+﻿@using WebApplication1.Models.ProductDTO
+@model ProductVariantDTO
+
+@* Simple read-only variant display used in product details — follows design language *@
+<div class="variant p-3 mb-3 rounded" style="background:var(--card-bg); box-shadow: var(--shadow-soft);">
+    <input type="hidden" asp-for="Id" />
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <div class="fw-semibold">@Model.Name</div>
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div class="small text-muted">@Model.Description</div>
+            }
+        </div>
+        <div class="ms-3 text-end">
+            <div class="fw-bold">@Model.Price.ToString("C")</div>
+        </div>
+    </div>
+</div>
