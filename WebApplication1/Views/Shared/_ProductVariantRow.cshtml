@@ -1,0 +1,19 @@
+﻿@using WebApplication1.Models.ProductDTO
+@model ProductVariantDTO
+@{
+    // We expect the index to be passed in from the parent view
+    int index = (int)ViewData["index"];
+}
+
+<div class="row mb-2 variant-row">
+    <input type="hidden" name="Variants.Index" value="@index" />
+    <div class="col-sm-5">
+        <input name="Variants[@index].Name" class="form-control" placeholder="Variant Name" required />
+    </div>
+    <div class="col-sm-5">
+        <input name="Variants[@index].Price" type="number" step="0.01" class="form-control" placeholder="Price" required />
+    </div>
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
+    </div>
+</div>

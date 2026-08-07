@@ -1,0 +1,41 @@
+﻿@using WebApplication1.Models.ProductDTO
+@model ProductDTO
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Delete Item</h1>
+            <p class="text-muted small mb-0">Confirm removal of this product. This action cannot be undone.</p>
+        </div>
+        <a class="btn btn-outline-dark" href="@Url.Action("Index","Menu")">Back</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="dish-card">
+                <div class="ratio ratio-4x3">
+                    <img src="@Url.Content($"~/products/{Model.ImageFileName}")" alt="@Model.Name" class="w-100 h-100" style="object-fit:cover;">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-section">
+                <h4>@Model.Name</h4>
+                <p class="text-muted">@Model.Description</p>
+                <p><strong>Category:</strong> @Model.CategoryName</p>
+
+                <form asp-action="Delete" asp-controller="Product" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-outline-danger">Confirm Delete</button>
+                        <a class="btn btn-outline-secondary" href="@Url.Action("Index","Menu")">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

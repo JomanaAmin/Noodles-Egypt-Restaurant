@@ -1,0 +1,100 @@
+﻿@using WebApplication1.Models.ProductDTO
+@model IEnumerable<ProductDTO>
+
+@{
+    ViewData["Title"] = "Menu";
+
+    // derive categories from supplied model (controller handles filtering)
+    var categoriesWithId = Model
+          .GroupBy(p => p.CategoryId)
+          .Select(g => new
+          {
+              Id = g.Key,
+              Name = g.First().CategoryName ?? "Uncategorized"
+          })
+          .OrderBy(c => c.Name)
+          .ToList();
+}
+
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Menu</h1>
+            <p class="text-muted small mb-0">Seasonal selections — browse by category or view all.</p>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" href="@Url.Action("Create", "Category")">+ Category</a>
+                <a class="btn btn-accent" href="@Url.Action("Create", "Menu")">+ Item</a>
+            </div>
+        }
+    </div>
+
+    @* Category filter pills *@
+    <div class="mb-4">
+        <div class="d-flex gap-2 flex-row flex-nowrap overflow-auto py-1" role="tablist" aria-label="Category filters">
+            <a class="btn btn-sm rounded-pill btn-outline-dark" href="@Url.Action("Index", "Menu")">All</a>
+            @foreach (var cat in categoriesWithId)
+            {
+                <a class="btn btn-sm rounded-pill btn-outline-dark" href="@Url.Action("GetByCategory", "Menu", new { id = @cat.Id })">@cat.Name</a>
+            }
+        </div>
+    </div>
+
+    @* Grid: 3 / 2 / 1 columns; each item card is clickable to view details *@
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="@Url.Action("Details", "Menu", new { id = item.Id })" class="text-decoration-none text-inherit h-100 d-block">
+                    <article class="cat-card h-100 d-flex flex-column reveal">
+                        @* Rounded image at top *@
+                        <div class="media" style="background-image: url('@Url.Content($"~/products/{item.ImageFileName}")'); border-top-left-radius:14px; border-top-right-radius:14px;"></div>
+
+                        <div class="body d-flex flex-column">
+                            <small class="text-muted mb-1">@item.CategoryName</small>
+                            <h5 class="mb-1 text-dark">@item.Name</h5>
+                            <p class="text-muted small mb-3">@item.Description</p>
+
+                            <div class="mb-3">
+                                <strong class="small text-dark">Variants & Prices</strong>
+                                @if (item.Variants != null && item.Variants.Any())
+                                {
+                                    <ul class="list-unstyled mt-2 mb-0">
+                                        @foreach (var v in item.Variants)
+                                        {
+                                            <li class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px dashed rgba(0,0,0,0.04);">
+                                                <div>
+                                                    <span class="fw-semibold text-dark">@v.Name</span>
+                                                    @if (!string.IsNullOrWhiteSpace(v.Description))
+                                                    {
+                                                        <div class="small text-muted">@v.Description</div>
+                                                    }
+                                                </div>
+                                                <div class="text-muted">@v.Price.ToString("C")</div>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <div class="small text-muted mt-2">No variants available</div>
+                                }
+                            </div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="mt-auto pt-2 d-flex justify-content-end gap-2" onclick="event.preventDefault();">
+                                    <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Update", "Menu", new { id = item.Id })">Edit</a>
+                                    <a class="btn btn-sm btn-outline-danger" href="@Url.Action("Delete", "Menu", new { id = item.Id })" onclick="return confirm('Delete this item?');">Delete</a>
+                                </div>
+                            }
+                        </div>
+                    </article>
+                </a>
+            </div>
+        }
+    </div>
+</div>

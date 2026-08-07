@@ -1,49 +1,457 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApplication1</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Noodles Egypt</title>
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 (layout utilities only) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <style>
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Palette */
+        :root {
+            --cream: #FBF3EA;
+            --beige: #F6EDE2;
+            --ink: #0b0b0b;
+            --deep-red: #8b1010;
+            --gold: #cfa84a;
+            --muted: #6e6b66;
+            --card-bg: rgba(255,255,255,0.88);
+            --glass: rgba(11,11,11,0.04);
+        }
+
+        /* Global typography & base */
+        body {
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Helvetica Neue", Arial;
+            color: var(--ink);
+            background: linear-gradient(180deg, var(--cream) 0%, #fff 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: "Playfair Display", serif;
+            color: var(--ink);
+            margin-bottom: .6rem;
+        }
+
+        p {
+            color: var(--muted);
+        }
+
+        /* NAV */
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            /* padding: 1rem 0; */
+            transition: background-color .28s ease, box-shadow .28s ease, padding .28s ease;
+            /*new stuff*/
+            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(246,237,226,0.96));
+            box-shadow: 0 8px 30px rgba(11,11,11,0.06);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(11,11,11,0.04);
+        }
+
+            /* .site-nav.transparent {
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .site-nav.solid {
+                background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(246,237,226,0.96));
+                box-shadow: 0 8px 30px rgba(11,11,11,0.06);
+                padding: .6rem 0;
+                border-bottom: 1px solid rgba(11,11,11,0.04);
+            } */
+
+        .brand {
+            font-family: "Playfair Display", serif;
+            letter-spacing: .18em;
+            font-size: 1.05rem;
+            color: var(--ink);
+        }
+
+        .nav-link {
+            color: rgba(11,11,11,0.72);
+            font-weight: 600;
+            margin-left: .25rem;
+            margin-right: .25rem;
+        }
+
+            .nav-link:hover {
+                color: var(--deep-red);
+            }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 78vh;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 30px 70px rgba(11,11,11,0.12);
+            margin-bottom: 3.5rem;
+        }
+
+        .hero__media {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.05)), url('/images/hero-sushi.jpg');
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.04);
+            transition: transform 12s linear;
+            will-change: transform;
+        }
+
+        .hero:hover .hero__media {
+            transform: scale(1.08);
+        }
+
+        .hero__overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(11,11,11,0.28), rgba(255,255,255,0.03));
+            mix-blend-mode: multiply;
+        }
+
+        .hero__content {
+            position: relative;
+            z-index: 2;
+            max-width: 1060px;
+            margin: auto;
+            padding: 4rem;
+            color: #fff;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+            line-height: .98;
+            letter-spacing: .01em;
+        }
+
+        .hero p.lead {
+            color: rgba(255,255,255,0.94);
+            font-size: 1.05rem;
+        }
+
+        .cta {
+            display: flex;
+            gap: .8rem;
+            margin-top: 1.2rem;
+        }
+
+        .btn-cta {
+            border-radius: .8rem;
+            padding: .7rem 1.1rem;
+            font-weight: 700;
+            transition: transform .22s ease, box-shadow .22s ease;
+            border: none;
+        }
+
+            .btn-cta.primary {
+                background: var(--deep-red);
+                color: #fff;
+                box-shadow: 0 12px 26px rgba(139,16,16,0.2);
+            }
+
+            .btn-cta.ghost {
+                background: transparent;
+                border: 1.5px solid rgba(255,255,255,0.9);
+                color: #fff;
+            }
+
+            .btn-cta:hover {
+                transform: translateY(-4px);
+            }
+
+        /* Decorative motif */
+        .hinomaru {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 30%, #fff7f6 0%, var(--deep-red) 45%);
+            box-shadow: 0 10px 30px rgba(139,16,16,0.15);
+            display: inline-block;
+            margin-right: .8rem;
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 0;
+            scroll-margin-top: 100px;
+        }
+
+            section.alt {
+                background: linear-gradient(180deg, #fff 0%, var(--beige) 100%);
+                border-top: 1px solid rgba(11,11,11,0.02);
+            }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 2.2rem;
+            align-items: center;
+        }
+
+        .about-image {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(11,11,11,0.08);
+            min-height: 320px;
+            background: url('/images/about-sushi.jpg') center/cover no-repeat;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 1rem;
+            margin-top: 1.4rem;
+        }
+
+        .feature {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: .9rem;
+            display: flex;
+            gap: .8rem;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(11,11,11,0.06);
+            transition: transform .28s ease;
+        }
+
+            .feature:hover {
+                transform: translateY(-6px);
+            }
+
+            .feature .icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                background: linear-gradient(180deg, rgba(139,16,16,0.12), rgba(255,255,255,0.6));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--deep-red);
+                font-weight: 700;
+                box-shadow: inset 0 -6px 12px rgba(255,255,255,0.08);
+            }
+
+        /* Categories preview */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+            gap: 1.4rem;
+        }
+
+        .cat-card {
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(246,237,226,0.85));
+            box-shadow: 0 18px 48px rgba(11,11,11,0.08);
+            transition: transform .36s cubic-bezier(.2,.9,.3,1), box-shadow .36s;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .cat-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 28px 70px rgba(11,11,11,0.14);
+            }
+
+            .cat-card .media {
+                height: 180px;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .cat-card .body {
+                padding: 1rem 1.1rem;
+                display: flex;
+                flex-direction: column;
+                gap: .6rem;
+                flex: 1;
+            }
+
+        .cat-badge {
+            color: var(--deep-red);
+            font-weight: 700;
+            font-size: .88rem;
+        }
+
+        /* Contact & footer */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1.8rem;
+            align-items: start;
+        }
+
+        .contact-card {
+            padding: 1.2rem;
+            border-radius: 12px;
+            background: var(--card-bg);
+            box-shadow: 0 12px 30px rgba(11,11,11,0.06);
+        }
+
+        footer.site-footer {
+            padding: 2.5rem 0;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        /* Reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+            .reveal.in-view {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        /* Small screens */
+        @@media (max-width: 991px) {
+            .about-grid
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        }
+    </style>
+
+    @RenderSection("HeadContent", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebApplication1</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <nav class="site-nav">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a class="brand d-flex align-items-center text-decoration-none" href="@Url.Action("Index", "Home")">
+                <img src="~/images/your-logo.png" alt="Noodles Egypt Logo" class="me-3" style="width: 55px; height: 55px; object-fit: contain;" />
+                <span class="fs-4">Noodles Egypt</span>
+            </a>
 
-    <footer class="border-top footer text-muted">
+            <div class="d-none d-lg-flex align-items-center position-absolute start-50 translate-middle-x">
+                <a class="nav-link px-3 fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#home">Home</a>
+                <div class="vr bg-secondary opacity-25" style="height: 22px; margin-top: -1px;"></div>
+                <a class="nav-link px-3 fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#about">About Us</a>
+                <div class="vr bg-secondary opacity-25" style="height: 22px; margin-top: -1px;"></div>
+                <a class="nav-link px-3 fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#categories">Categories</a>
+                <div class="vr bg-secondary opacity-25" style="height: 22px; margin-top: -1px;"></div>
+                <a class="nav-link px-3 fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#contact">Contact</a>
+                <div class="vr bg-secondary opacity-25" style="height: 22px; margin-top: -1px;"></div>
+                <a class="nav-link px-3 fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Menu")">Menu</a>
+            </div>
+
+            @* Mobile toggler *@
+            <div class="d-lg-none">
+                <button class="navbar-toggler btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon" style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e&quot;);"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="mobileNav">
+            <div class="container py-3 d-lg-none">
+                @* All classes added here to match desktop *@
+                <a class="d-block py-1 px-3 nav-link fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#home">Home</a>
+                <a class="d-block py-1 px-3 nav-link fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#about">About Us</a>
+                <a class="d-block py-1 px-3 nav-link fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#categories">Categories</a>
+                <a class="d-block py-1 px-3 nav-link fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Home")#contact">Contact</a>
+                <a class="d-block py-1 px-3 nav-link fw-medium fs-6 text-secondary" href="@Url.Action("Index", "Menu")">Menu</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - WebApplication1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="mb-3">
+                <strong>Noodles Egypt</strong> &middot; Authentic experience · © @DateTime.Now.Year
+            </div>
+            <small>City Mall · 2nd District · 6th of October city · Phone: <a href="tel:+201020196390">+20102 019 6390</a></small>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Navbar: toggle solid background when scrolling past hero
+
+        // Reveal on scroll for elements with .reveal
+        (function () {
+            const opts = { threshold: 0.12 };
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+                });
+            }, opts);
+            document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        })();
+
+        // Smooth anchor offset for fixed/sticky nav (desktop)
+        (function () {
+            function offsetScrollTo(hash) {
+                if (!hash) return;
+                const el = document.querySelector(hash);
+                if (!el) return;
+                const nav = document.querySelector('.site-nav');
+                const navHeight = nav ? nav.getBoundingClientRect().height : 80;
+                const top = el.getBoundingClientRect().top + window.scrollY - navHeight - 18;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+            // intercept clicks on same-page anchors
+            document.addEventListener('click', function (e) {
+                const a = e.target.closest('a[href^="#"]');
+                if (!a) return;
+                e.preventDefault();
+                offsetScrollTo(a.getAttribute('href'));
+            });
+        })();
+        //              document.querySelectorAll("#mobileNav .nav-link").forEach(link => {
+        //     link.addEventListener("click", () => {
+        //         bootstrap.Collapse
+        //             .getOrCreateInstance(document.getElementById("mobileNav"))
+        //             .hide();
+        //     });
+        // });
+                document.querySelectorAll("#mobileNav .nav-link").forEach(link => {
+            link.addEventListener("click", function () {
+                const url = new URL(this.href);
+
+                if (url.pathname === window.location.pathname) {
+                    const mobileNav = document.getElementById("mobileNav");
+                    mobileNav.classList.remove("show");
+                }
+            });
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

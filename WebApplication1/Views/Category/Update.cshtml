@@ -1,0 +1,68 @@
+﻿@using WebApplication1.Models.CategoryDTO
+@model UpdateCategoryDTO
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="container-lg py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Edit Category</h1>
+            <p class="text-muted small mb-0">Update category information.</p>
+        </div>
+        <a class="btn btn-outline-dark" href="@Url.Action("Index", "Category")">Back</a>
+    </div>
+
+    <form asp-action="Update" asp-controller="Category" method="post" enctype="multipart/form-data" class="form-section">
+        <input asp-for="Id" type="hidden" />
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="form-floating mb-3">
+                    <input asp-for="Name" class="form-control rounded-pill" placeholder="Name" />
+                    <label asp-for="Name">Name</label>
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Description" class="form-control rounded" placeholder="Description" style="height:120px"></textarea>
+                    <label asp-for="Description">Description</label>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category Image</label>
+                    <div class="menu-card p-3 mb-2 text-center">
+                        <img id="categoryPreview" src="@(String.IsNullOrEmpty(Model.ImageFileName) ? "/images/cat-placeholder.jpg" : Url.Content($"~/categories/{Model.ImageFileName}"))" alt="category preview" class="img-fluid rounded" style="height:180px; object-fit:cover" />
+                    </div>
+
+                    <input asp-for="ImageFile" type="file" accept="image/*" class="form-control rounded-pill" name="ImageFile" />
+                    <span asp-validation-for="ImageFile" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Save Changes</button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Category")">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const imageInput = document.querySelector('input[type=file][name="ImageFile"]');
+            const preview = document.getElementById('categoryPreview');
+            if (imageInput && preview) {
+                imageInput.addEventListener('change', function (ev) {
+                    const f = ev.target.files && ev.target.files[0];
+                    if (!f) return;
+                    const reader = new FileReader();
+                    reader.onload = function (e) { preview.src = e.target.result; };
+                    reader.readAsDataURL(f);
+                });
+            }
+        })();
+    </script>
+}
